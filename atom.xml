@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2024-06-11T01:21:34.159Z</updated>
+  <updated>2024-06-12T07:17:33.848Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《Spark 基础环境配置》</title>
+    <link href="http://example.com/2024/06/12/%E3%80%8ASpark-%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E3%80%8B/"/>
+    <id>http://example.com/2024/06/12/%E3%80%8ASpark-%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E3%80%8B/</id>
+    <published>2024-06-12T05:22:06.000Z</published>
+    <updated>2024-06-12T07:17:33.848Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="《Spark-基础环境配置》"><a href="#《Spark-基础环境配置》" class="headerlink" title="《Spark 基础环境配置》"></a>《Spark 基础环境配置》</h1><p>##Spark 基础环境配置<br>在启动 Apache Spark 集群之前，确保已经搭建好了必要的基础环境，包括 JDK（Java Development Kit）、Hadoop 和 Zookeeper。这些组件为 Spark 提供了必要的运行环境、分布式文件系统和分布式协调服务。下面将详细介绍如何配置这些基础环境。</p><h2 id="1-JDK-配置"><a href="#1-JDK-配置" class="headerlink" title="1. JDK 配置"></a>1. JDK 配置</h2><p>Apache Spark 使用 Java 编写，因此需要先安装 JDK。确保你的系统已经安装了 JDK 8 或更高版本，因为 Spark 官方推荐使用这些版本。<br>安装 JDK<br>你可以从 Oracle 官网下载 JDK 安装包，并按照提示进行安装。安装完成后，配置 JDK 的环境变量，包括 JAVA_HOME、PATH 和 CLASSPATH。</p><p>JAVA_HOME：指向 JDK 安装目录，如 &#x2F;usr&#x2F;lib&#x2F;jvm&#x2F;java-8-openjdk-amd64（Linux&#x2F;macOS）或 C:\Program Files\Java\jdk-版本号（Windows）。<br>PATH：添加 JDK 的 bin 目录到 PATH 中，以便在任意目录下都能使用 Java 命令。<br>CLASSPATH：通常不需要手动设置，但在某些情况下可能需要添加 JDK 的库目录。<br>2. Hadoop 配置<br>Hadoop 为 Spark 提供了分布式文件系统（HDFS）和 YARN（Yet Another Resource Negotiator）作为资源管理器。因此，需要先安装和配置 Hadoop。</p><p>安装 Hadoop<br>你可以从 Hadoop 官网下载 Hadoop 安装包，并按照官方文档进行安装和配置。安装完成后，需要配置 Hadoop 的环境变量，包括 HADOOP_HOME 和 PATH。</p><p>HADOOP_HOME：指向 Hadoop 安装目录。<br>PATH：添加 Hadoop 的 bin 和 sbin 目录到 PATH 中，以便在任意目录下都能使用 Hadoop 命令。<br>配置 Hadoop<br>Hadoop 的配置文件主要位于 etc&#x2F;hadoop&#x2F; 目录下。你需要根据你的集群环境修改这些配置文件，包括 core-site.xml、hdfs-site.xml、yarn-site.xml 和 mapred-site.xml（可能需要先重命名 mapred-site.xml.template）。</p><h2 id="3-Zookeeper-配置"><a href="#3-Zookeeper-配置" class="headerlink" title="3. Zookeeper 配置"></a>3. Zookeeper 配置</h2><p>Zookeeper 是一个分布式协调服务，用于维护配置信息、命名、提供分布式同步和提供组服务等。在 Spark 中，Zookeeper 通常用于 Spark Streaming 的 Kafka 集成等场景。</p><p>安装 Zookeeper<br>你可以从 Apache 官网下载 Zookeeper 安装包，并按照官方文档进行安装和配置。安装完成后，需要配置 Zookeeper 的环境变量，包括 ZOOKEEPER_HOME 和 PATH。</p><p>ZOOKEEPER_HOME：指向 Zookeeper 安装目录。<br>PATH：添加 Zookeeper 的 bin 目录到 PATH 中，以便在任意目录下都能使用 Zookeeper 命令。<br>配置 Zookeeper<br>Zookeeper 的配置文件主要位于 conf&#x2F; 目录下。你需要根据你的集群环境修改 zoo.cfg 文件，包括设置数据目录、日志目录、监听端口和服务器列表等。</p><h2 id="4-安装和配置-Spark"><a href="#4-安装和配置-Spark" class="headerlink" title="4. 安装和配置 Spark"></a>4. 安装和配置 Spark</h2><p>在 JDK、Hadoop 和 Zookeeper 配置完成后，你可以开始安装和配置 Spark。</p><p>下载 Spark<br>从 Apache Spark 官网下载适合你操作系统的预编译包。</p><p>解压 Spark<br>将下载的 Spark 压缩包解压到你选择的目录。</p><p>配置环境变量<br>将 Spark 的 bin 目录添加到你的 PATH 环境变量中，以便在终端中直接运行 Spark 命令。</p><p>配置 Spark<br>在 Spark 的 conf&#x2F; 目录下，你可以找到一些配置文件，如 spark-env.sh 和 spark-defaults.conf。你可以根据需要修改这些配置文件，设置 Spark 的运行环境、内存分配、日志级别等。</p><p>spark-env.sh：设置 Spark 运行时的环境变量，如 Java 路径、Spark 主目录、内存分配等。<br>spark-defaults.conf：设置 Spark 的默认配置参数，如 Master URL、Executor 内存等。</p><h2 id="5-验证配置"><a href="#5-验证配置" class="headerlink" title="5. 验证配置"></a>5. 验证配置</h2><p>在配置完成后，你可以通过运行一些简单的命令或示例代码来验证你的配置是否正确。例如，你可以启动 Spark Shell 并尝试读取 HDFS 上的文件，或者启动一个 Spark 应用程序并观察其在 YARN 上的运行情况。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;《Spark-基础环境配置》&quot;&gt;&lt;a href=&quot;#《Spark-基础环境配置》&quot; class=&quot;headerlink&quot; title=&quot;《Spark 基础环境配置》&quot;&gt;&lt;/a&gt;《Spark 基础环境配置》&lt;/h1&gt;&lt;p&gt;##Spark 基础环境配置&lt;br&gt;在启动 </summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
