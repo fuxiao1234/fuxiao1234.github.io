@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2024-06-12T07:27:21.065Z</updated>
+  <updated>2024-06-12T07:31:52.830Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《Spark HA &amp; Yarn 配置》</title>
+    <link href="http://example.com/2024/06/12/%E3%80%8ASpark-HA-Yarn-%E9%85%8D%E7%BD%AE%E3%80%8B/"/>
+    <id>http://example.com/2024/06/12/%E3%80%8ASpark-HA-Yarn-%E9%85%8D%E7%BD%AE%E3%80%8B/</id>
+    <published>2024-06-12T07:29:43.000Z</published>
+    <updated>2024-06-12T07:31:52.830Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="《Spark-HA-Yarn-配置》"><a href="#《Spark-HA-Yarn-配置》" class="headerlink" title="《Spark HA &amp; Yarn 配置》"></a>《Spark HA &amp; Yarn 配置》</h1><p>Spark HA &amp; Yarn 配置<br>Apache Spark 是一个用于大规模数据处理的快速、通用引擎。在分布式环境中运行 Spark 时，高可用性和资源管理是两项关键功能。Spark 提供了多种部署模式，其中高可用性（HA）模式和与 YARN（Yet Another Resource Negotiator）的集成特别重要。本文将介绍如何在 Spark 中配置这两种模式。</p><h2 id="1-Spark-高可用性（HA）配置"><a href="#1-Spark-高可用性（HA）配置" class="headerlink" title="1. Spark 高可用性（HA）配置"></a>1. Spark 高可用性（HA）配置</h2><p>在 Spark 中，高可用性（HA）模式允许 Master 节点在发生故障时自动切换到备用节点，从而确保集群的连续性和可用性。Spark Standalone 模式支持基于 Apache ZooKeeper 的 HA 配置。</p><h3 id="1-1-配置-ZooKeeper"><a href="#1-1-配置-ZooKeeper" class="headerlink" title="1.1 配置 ZooKeeper"></a>1.1 配置 ZooKeeper</h3><p>在配置 Spark HA 之前，你需要先安装并配置 ZooKeeper 集群。ZooKeeper 提供了分布式协调服务，用于维护配置信息、命名、提供分布式同步和提供组服务。</p><h3 id="1-2-配置-Spark-Master"><a href="#1-2-配置-Spark-Master" class="headerlink" title="1.2 配置 Spark Master"></a>1.2 配置 Spark Master</h3><p>在 Spark 的 conf 目录下，编辑 spark-env.sh 文件，为 Spark Master 设置 ZooKeeper 的连接字符串。你需要添加类似以下内容的行：</p><p>bash<br>export SPARK_DAEMON_JAVA_OPTS&#x3D;”-Dspark.deploy.zookeeper.url&#x3D;zk:&#x2F;&#x2F;zookeeper1:2181,zookeeper2:2181,zookeeper3:2181 -Dspark.deploy.zookeeper.dir&#x3D;&#x2F;spark”<br>这里 zk:&#x2F;&#x2F;zookeeper1:2181,zookeeper2:2181,zookeeper3:2181 是你的 ZooKeeper 集群的连接字符串，&#x2F;spark 是 Spark 在 ZooKeeper 中使用的目录。</p><h3 id="1-3-启动-Spark-Master"><a href="#1-3-启动-Spark-Master" class="headerlink" title="1.3 启动 Spark Master"></a>1.3 启动 Spark Master</h3><p>在配置完成后，你可以启动多个 Spark Master 实例，并使用相同的 ZooKeeper 配置。Spark 将使用 ZooKeeper 来协调 Master 之间的状态，并在主 Master 节点故障时自动切换到备用 Master。</p><h3 id="4-配置-Worker-节点"><a href="#4-配置-Worker-节点" class="headerlink" title=".4 配置 Worker 节点"></a>.4 配置 Worker 节点</h3><p>Worker 节点也需要知道 Master 的 ZooKeeper 配置，但它们通常不需要直接编辑配置文件。相反，Worker 节点在启动时通过 –master 参数连接到 Master 的 ZooKeeper URL。</p><h2 id="2-Spark-与-YARN-集成配置"><a href="#2-Spark-与-YARN-集成配置" class="headerlink" title="2. Spark 与 YARN 集成配置"></a>2. Spark 与 YARN 集成配置</h2><p>YARN（Yet Another Resource Negotiator）是 Hadoop 2.x 中的一个资源管理器，用于管理集群中的资源（如内存和 CPU）。Spark 可以通过 YARN 集群管理器来部署应用程序，从而利用 YARN 的资源管理和调度功能。</p><h3 id="2-1-配置-Spark"><a href="#2-1-配置-Spark" class="headerlink" title="2.1 配置 Spark"></a>2.1 配置 Spark</h3><p>在 Spark 的 conf 目录下，编辑 spark-defaults.conf 文件（如果不存在则创建），添加以下配置来启用 YARN 支持：</p><p>spark.master yarn<br>spark.executor.memory 1g<br>spark.executor.cores 1<br>spark.driver.memory 1g<br>这里，spark.master 设置为 yarn 以启用 YARN 模式，spark.executor.memory 和 spark.executor.cores 分别设置每个 Executor 的内存和核心数，spark.driver.memory 设置 Driver 程序的内存。</p><h3 id="2-2-配置-YARN"><a href="#2-2-配置-YARN" class="headerlink" title="2.2 配置 YARN"></a>2.2 配置 YARN</h3><p>YARN 的配置主要在 Hadoop 的配置文件中进行，如 yarn-site.xml 和 core-site.xml。你需要确保 YARN 集群已正确配置，并且 Hadoop 的配置文件对 Spark 可见。</p><h3 id="2-3-提交-Spark-应用程序到-YARN"><a href="#2-3-提交-Spark-应用程序到-YARN" class="headerlink" title="2.3 提交 Spark 应用程序到 YARN"></a>2.3 提交 Spark 应用程序到 YARN</h3><p>使用 spark-submit 命令提交 Spark 应用程序到 YARN 集群：</p><p>bash<br>.&#x2F;bin&#x2F;spark-submit \<br>  –class com.example.Main \<br>  –master yarn \<br>  –deploy-mode cluster \<br>  &#x2F;path&#x2F;to&#x2F;your-app.jar \<br>  [application-arguments]<br>在这里，–master yarn 指定使用 YARN 作为集群管理器，–deploy-mode cluster 指定在 YARN 集群上运行 Driver 程序（而不是在客户端上）。</p><h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>通过配置 Spark 的高可用性（HA）模式和与 YARN 的集成，你可以确保 Spark 集群的连续性和可用性，并有效地利用集群资源。HA 模式通过 ZooKeeper 提供了 Master 节点之间的协调，而 YARN 模式则允许 Spark 利用 Hadoop YARN 集群的资源管理和调度功能。这些配置可以根据你的具体需求进行调整和优化。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;《Spark-HA-Yarn-配置》&quot;&gt;&lt;a href=&quot;#《Spark-HA-Yarn-配置》&quot; class=&quot;headerlink&quot; title=&quot;《Spark HA &amp;amp; Yarn 配置》&quot;&gt;&lt;/a&gt;《Spark HA &amp;amp; Yarn 配置》&lt;/</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>《Spark local&amp; stand-alone 配置》</title>
